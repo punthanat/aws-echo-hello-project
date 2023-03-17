@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.nodeport.name }}
+  namespace: {{ .Values.nodeport.namespace }}
+spec:
+  type: {{ .Values.nodeport.type }}
+  ports:
+  - port: {{ .Values.nodeport.porthttp }}
+    targetPort: {{ .Values.nodeport.tghttp }}
+    protocol: {{ .Values.nodeport.protocol }}
+    name: {{ .Values.nodeport.http }}
+    nodePort: {{ .Values.nodeport.nodeport }}
+  - port: {{ .Values.nodeport.porthttps }}
+    targetPort: {{ .Values.nodeport.tghttps }}
+    protocol: {{ .Values.nodeport.protocol }}
+    name: {{ .Values.nodeport.https }}
+  selector:
+    app.kubernetes.io/name: {{ .Values.nodeport.app }}

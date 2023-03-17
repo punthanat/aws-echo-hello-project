@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.ingressctl.name }}
+  namespace: {{ .Values.ingressctl.namespaceapp }}
+spec:
+  project: {{ .Values.ingressctl.project }}
+  source:
+    chart: {{ .Values.ingressctl.chart }}
+    repoURL: {{ .Values.ingressctl.repo }}
+    targetRevision: {{ .Values.ingressctl.targetrevision }}
+    helm:
+      values: |-
+        service:
+          enabled: false
+        providers:
+          ingressClass: traefik
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: IngressLabel
+                  operator: In
+                  values:
+                  - {{ .Values.ingressctl.nodename }}
+  destination:
+    server: {{ .Values.ingressctl.server }}
+    namespace: {{ .Values.ingressctl.namespacedest }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

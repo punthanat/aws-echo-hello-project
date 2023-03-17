@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.helloserver.name }}
+  labels:
+    app: {{ .Values.helloserver.name }}
+spec:
+  replicas: {{ .Values.helloserver.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.helloserver.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.helloserver.name }}
+    spec:
+      containers:
+      - name: {{ .Values.helloserver.name }}
+        image: {{ .Values.helloserver.image }}
+        ports:
+        - containerPort: {{ .Values.helloserver.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.helloserver.name }}-svc
+spec:
+  type: {{ .Values.helloserver.serviceType }}
+  ports:
+  - port: {{ .Values.helloserver.servicePort }}
+  selector:
+    app: {{ .Values.helloserver.name }}
